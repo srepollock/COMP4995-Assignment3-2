@@ -10,6 +10,10 @@ IDirect3DDevice9* Device = 0;
 const int Width = 640;
 const int Height = 480;
 
+POINT pos, cur;
+
+int selected = -1; // Changes with picking
+
 Camera TheCamera(Camera::LANDOBJECT);
 
 //
@@ -72,23 +76,22 @@ bool Display(float timeDelta)
 		if (::GetAsyncKeyState('F') & 0x8000f)
 			TheCamera.fly(-4.0f * timeDelta);
 
-		if (::GetAsyncKeyState(VK_UP) & 0x8000f)
-			TheCamera.pitch(1.0f * timeDelta);
-
-		if (::GetAsyncKeyState(VK_DOWN) & 0x8000f)
-			TheCamera.pitch(-1.0f * timeDelta);
-
-		if (::GetAsyncKeyState(VK_LEFT) & 0x8000f)
-			TheCamera.yaw(-1.0f * timeDelta);
-
-		if (::GetAsyncKeyState(VK_RIGHT) & 0x8000f)
-			TheCamera.yaw(1.0f * timeDelta);
-
 		if (::GetAsyncKeyState('N') & 0x8000f)
 			TheCamera.roll(1.0f * timeDelta);
 
 		if (::GetAsyncKeyState('M') & 0x8000f)
 			TheCamera.roll(-1.0f * timeDelta);
+		if (selected == -1) {
+			GetCursorPos(&pos);
+			if (selected == -1) {
+				if (pos.x != cur.x || pos.y != cur.y) {
+					TheCamera.yaw(((float)(pos.x - cur.x) / 500));
+					TheCamera.pitch(((float)(pos.y - cur.y) / 500));
+				}
+			}
+			SetCursorPos(Width / 2, Height / 2);
+			GetCursorPos(&cur);
+		}
 
 		// Update the view matrix representing the cameras 
 		// new position/orientation.
@@ -140,7 +143,7 @@ int WINAPI WinMain(HINSTANCE hinstance,
 	int showCmd)
 {
 	if (!d3d::InitD3D(hinstance,
-		Width, Height, true, D3DDEVTYPE_HAL, &Device))
+		Width, Height, TRUE, D3DDEVTYPE_HAL, &Device))
 	{
 		::MessageBox(0, _T("InitD3D() - FAILED"), 0, 0);
 		return 0;
@@ -151,6 +154,8 @@ int WINAPI WinMain(HINSTANCE hinstance,
 		::MessageBox(0, _T("Setup() - FAILED"), 0, 0);
 		return 0;
 	}
+
+	GetCursorPos(&pos);
 
 	d3d::EnterMsgLoop(Display);
 
