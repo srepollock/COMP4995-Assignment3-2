@@ -6,9 +6,35 @@
 //
 
 IDirect3DDevice9* Device = 0;
+D3DXMATRIX World;
 
-const int Width = 640;
-const int Height = 480;
+struct Vertex {
+	Vertex() {
+	}
+
+	Vertex(float x, float y, float z,
+		float nx, float ny, float nz,
+		float u, float v) {
+		_x = x;
+		_y = y;
+		_z = z;
+		_nx = nx;
+		_ny = ny;
+		_nz = nz;
+		_u = u;
+		_v = v;
+	}
+
+	float _x, _y, _z;
+	float _nx, _ny, _nz;
+	float _u, _v;
+
+	static const DWORD FVF;
+};
+const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;
+
+const int Width = SCREEN_WIDTH;
+const int Height = SCREEN_HEIGHT;
 
 POINT pos, cur;
 
@@ -16,11 +42,179 @@ int selected = -1; // Changes with picking
 
 Camera TheCamera(Camera::LANDOBJECT);
 
+struct MeshStruct {
+	ID3DXMesh* mesh;
+	std::vector<D3DMATERIAL9> mtrls;
+	std::vector<IDirect3DTexture9*> tex;
+	D3DXVECTOR3 pos;
+	MeshStruct(ID3DXMesh* m, std::vector<D3DMATERIAL9> mtrl, std::vector<IDirect3DTexture9*> t, D3DXVECTOR3 p) {
+		mesh = m;
+		mtrls = mtrl;
+		tex = t;
+		pos = p;
+	}
+};
+template<class T> void Release(T t)
+{
+	if (t)
+	{
+		t->Release();
+		t = 0;
+	}
+}
+template<class T> void Delete(T t)
+{
+	if (t)
+	{
+		delete t;
+		t = 0;
+	}
+}
+
+std::vector<MeshStruct> Meshes;
+
+bool LoadMesh(char * filename, int pos) {
+	//temporary meshes
+	ID3DXMesh* Mesh = nullptr;
+	std::vector<D3DMATERIAL9> Mtrls(0);
+	std::vector<IDirect3DTexture9*> Textures(0);
+
+	// loading mesh
+	HRESULT hr = 0;
+
+	//
+	// Load the XFile data.
+	//
+
+	ID3DXBuffer* adjBuffer = 0;
+	ID3DXBuffer* mtrlBuffer = 0;
+	DWORD numMtrls = 0;
+
+	hr = D3DXLoadMeshFromX(
+		filename,
+		D3DXMESH_MANAGED,
+		Device,
+		&adjBuffer,
+		&mtrlBuffer,
+		0,
+		&numMtrls,
+		&Mesh);
+
+	if (FAILED(hr)) {
+		::MessageBox(0, _T("D3DXLoadMeshFromX() - FAILED"), 0, 0);
+		return false;
+	}
+
+	//
+	// Extract the materials, and load textures.
+	//
+
+	if (mtrlBuffer != 0 && numMtrls != 0) {
+		D3DXMATERIAL* mtrls = (D3DXMATERIAL*)mtrlBuffer->GetBufferPointer();
+
+		for (int i = 0; i < numMtrls; i++) {
+			// the MatD3D property doesn't have an ambient value set
+			// when its loaded, so set it now:
+			mtrls[i].MatD3D.Ambient = mtrls[i].MatD3D.Diffuse;
+
+			// save the ith material
+			Mtrls.push_back(mtrls[i].MatD3D);
+
+
+			// check if the ith material has an associative texture
+			if (mtrls[i].pTextureFilename != 0) {
+				// yes, load the texture for the ith subset
+				IDirect3DTexture9* tex = 0;
+				D3DXCreateTextureFromFile(
+					Device,
+					mtrls[i].pTextureFilename,
+					&tex);
+
+				// save the loaded texture
+				Textures.push_back(tex);
+			}
+			else {
+				// no texture for the ith subset
+				Textures.push_back(0);
+			}
+		}
+	}
+	Release<ID3DXBuffer*>(mtrlBuffer); // done w/ buffer
+
+									   //
+									   // Optimize the mesh.
+									   //
+	hr = Mesh->OptimizeInplace(
+		D3DXMESHOPT_ATTRSORT |
+		D3DXMESHOPT_COMPACT |
+		D3DXMESHOPT_VERTEXCACHE,
+		(DWORD*)adjBuffer->GetBufferPointer(),
+		0, 0, 0);
+
+	Release<ID3DXBuffer*>(adjBuffer); // done w/ buffer
+
+	if (FAILED(hr)) {
+		::MessageBox(0, _T("OptimizeInplace() - FAILED"), 0, 0);
+		return false;
+	}
+
+	// Load more
+	float ret[5];
+	switch (pos) {
+	case 0:
+		ret[0] = 0.0f;
+		ret[1] = 0.5f;
+		ret[2] = -7.5f;
+		break;
+	case 1:
+		ret[0] = 7.5f;
+		ret[1] = 0.5f;
+		ret[2] = 2.5f;
+		break;
+	case 2:
+		ret[0] = 0.0f;
+		ret[1] = 0.5f;
+		ret[2] = 7.5f;
+		break;
+	case 3: // obj 4
+		ret[0] = 0.0f;
+		ret[1] = 0.0f;
+		ret[2] = 0.0f;
+		break;
+	case 4: // obj 5
+		ret[0] = 0.0f;
+		ret[1] = 0.0f;
+		ret[2] = 0.0f;
+		break;
+	}
+
+	MeshStruct retstruct(Mesh, Mtrls, Textures, { ret[0],ret[1],ret[2] });
+	Meshes.push_back(retstruct);
+}
+
+bool RenderMesh(MeshStruct mesh) {
+	D3DXMATRIX world;
+	D3DXMatrixTranslation(&world, mesh.pos.x, mesh.pos.y, mesh.pos.z);
+	Device->SetTransform(D3DTS_WORLD, &world);
+	for (int i = 0; i < mesh.mtrls.size(); i++) {
+		Device->SetMaterial(&mesh.mtrls[i]);
+		Device->SetTexture(0, mesh.tex[i]);
+		mesh.mesh->DrawSubset(i);
+	}
+	return true;
+}
+
 //
 // Framework functions
 //
 bool Setup()
 {
+	// Load the models
+
+	LoadMesh("box.x", 0);
+	LoadMesh("Harrier.x", 1);
+	LoadMesh("Monkey.x", 2);
+
 	//
 	// Setup a basic scene.  The scene will be created the
 	// first time this function is called.
@@ -105,6 +299,10 @@ bool Display(float timeDelta)
 
 		Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
 		Device->BeginScene();
+
+		for (auto mesh : Meshes) {
+			RenderMesh(mesh);
+		}
 
 		d3d::DrawBasicScene(Device, 1.0f);
 
