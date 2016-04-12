@@ -40,7 +40,7 @@ POINT pos, cur;
 
 int selected = -1; // Changes with picking
 
-Camera TheCamera(Camera::LANDOBJECT);
+Camera TheCamera(Camera::AIRCRAFT);
 
 struct MeshStruct {
 	ID3DXMesh* mesh;
@@ -253,28 +253,28 @@ bool Display(float timeDelta)
 		//
 
 		if (::GetAsyncKeyState('W') & 0x8000f)
-			TheCamera.walk(4.0f * timeDelta);
+			TheCamera.walk(4.0f * 0.05);
 
 		if (::GetAsyncKeyState('S') & 0x8000f)
-			TheCamera.walk(-4.0f * timeDelta);
+			TheCamera.walk(-4.0f * 0.05);
 
 		if (::GetAsyncKeyState('A') & 0x8000f)
-			TheCamera.strafe(-4.0f * timeDelta);
+			TheCamera.strafe(-4.0f * 0.05);
 
 		if (::GetAsyncKeyState('D') & 0x8000f)
-			TheCamera.strafe(4.0f * timeDelta);
+			TheCamera.strafe(4.0f * 0.05);
 
 		if (::GetAsyncKeyState('R') & 0x8000f)
-			TheCamera.fly(4.0f * timeDelta);
+			TheCamera.fly(4.0f * 0.05);
 
 		if (::GetAsyncKeyState('F') & 0x8000f)
-			TheCamera.fly(-4.0f * timeDelta);
+			TheCamera.fly(-4.0f * 0.05);
 
 		if (::GetAsyncKeyState('N') & 0x8000f)
-			TheCamera.roll(1.0f * timeDelta);
+			TheCamera.roll(1.0f * 0.05);
 
 		if (::GetAsyncKeyState('M') & 0x8000f)
-			TheCamera.roll(-1.0f * timeDelta);
+			TheCamera.roll(-1.0f * 0.05);
 		if (selected == -1) {
 			GetCursorPos(&pos);
 			if (selected == -1) {

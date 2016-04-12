@@ -105,7 +105,7 @@ bool d3d::InitD3D(
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
 	d3dpp.Flags = 0;
 	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+	d3dpp.PresentationInterval = windowed ? 0 : D3DPRESENT_INTERVAL_IMMEDIATE;
 
 	// Step 4: Create the device.
 
