@@ -14,6 +14,7 @@ IDirect3DTexture9* MirrorTex = 0;
 D3DMATERIAL9 MirrorMtrl = d3d::WHITE_MTRL;
 BoundingSphere bound1, bound2, bound3;
 Ray ray;
+bool hit = false;
 
 struct Vertex {
 	Vertex() {
@@ -392,7 +393,6 @@ bool RenderMesh(MeshStruct mesh) {
 	return true;
 }
 
-// TODO FIX
 bool RenderMirrorMesh(MeshStruct mesh, D3DXMATRIX W) {
 	Device->SetTransform(D3DTS_WORLD, &W);
 	for (int i = 0; i < mesh.mtrls.size(); i++) {
@@ -532,46 +532,76 @@ bool Display(float timeDelta)
 {
 	if (Device)
 	{
-		bool hit = false;
 		float dist[] = { distFromCamera(Meshes[0].pos),
 						 distFromCamera(Meshes[1].pos) };
 		//
 		// Update: Update the camera.
 		//
 
-		if (::GetAsyncKeyState('W') & 0x8000f)
-			TheCamera.walk(4.0f * 0.05);
+		switch (selected) {
+		case -1:
+			if (::GetAsyncKeyState('W') & 0x8000f)
+				TheCamera.walk(4.0f * 0.05);
 
-		if (::GetAsyncKeyState('S') & 0x8000f)
-			TheCamera.walk(-4.0f * 0.05);
+			if (::GetAsyncKeyState('S') & 0x8000f)
+				TheCamera.walk(-4.0f * 0.05);
 
-		if (::GetAsyncKeyState('A') & 0x8000f)
-			TheCamera.strafe(-4.0f * 0.05);
+			if (::GetAsyncKeyState('A') & 0x8000f)
+				TheCamera.strafe(-4.0f * 0.05);
 
-		if (::GetAsyncKeyState('D') & 0x8000f)
-			TheCamera.strafe(4.0f * 0.05);
+			if (::GetAsyncKeyState('D') & 0x8000f)
+				TheCamera.strafe(4.0f * 0.05);
 
-		if (::GetAsyncKeyState('R') & 0x8000f)
-			TheCamera.fly(4.0f * 0.05);
+			if (::GetAsyncKeyState('R') & 0x8000f)
+				TheCamera.fly(4.0f * 0.05);
 
-		if (::GetAsyncKeyState('F') & 0x8000f)
-			TheCamera.fly(-4.0f * 0.05);
+			if (::GetAsyncKeyState('F') & 0x8000f)
+				TheCamera.fly(-4.0f * 0.05);
 
-		if (::GetAsyncKeyState('N') & 0x8000f)
-			TheCamera.roll(1.0f * 0.05);
+			if (::GetAsyncKeyState('N') & 0x8000f)
+				TheCamera.roll(1.0f * 0.05);
 
-		if (::GetAsyncKeyState('M') & 0x8000f)
-			TheCamera.roll(-1.0f * 0.05);
-		if (selected == -1) {
-			GetCursorPos(&pos);
+			if (::GetAsyncKeyState('M') & 0x8000f)
+				TheCamera.roll(-1.0f * 0.05);
 			if (selected == -1) {
-				if (pos.x != cur.x || pos.y != cur.y) {
-					TheCamera.yaw(((float)(pos.x - cur.x) / 500));
-					TheCamera.pitch(((float)(pos.y - cur.y) / 500));
+				GetCursorPos(&pos);
+				if (selected == -1) {
+					if (pos.x != cur.x || pos.y != cur.y) {
+						TheCamera.yaw(((float)(pos.x - cur.x) / 500));
+						TheCamera.pitch(((float)(pos.y - cur.y) / 500));
+					}
 				}
+				SetCursorPos(Width / 2, Height / 2);
+				GetCursorPos(&cur);
 			}
-			SetCursorPos(Width / 2, Height / 2);
-			GetCursorPos(&cur);
+			break;
+		case 0:
+			if (::GetAsyncKeyState('W') & 0x8000f)
+				Meshes[0].pos.y -= 1.0f * 0.05;
+
+			if (::GetAsyncKeyState('S') & 0x8000f)
+				Meshes[0].pos.y += 1.0f * 0.05;
+
+			if (::GetAsyncKeyState('A') & 0x8000f)
+				Meshes[0].pos.x -= 1.0f * 0.05;
+
+			if (::GetAsyncKeyState('D') & 0x8000f)
+				Meshes[0].pos.x += 1.0f * 0.05;
+
+			break;
+		case 1:
+			if (::GetAsyncKeyState('W') & 0x8000f)
+				Meshes[1].pos.y -= 1.0f * 0.05;
+
+			if (::GetAsyncKeyState('S') & 0x8000f)
+				Meshes[1].pos.y += 1.0f * 0.05;
+
+			if (::GetAsyncKeyState('A') & 0x8000f)
+				Meshes[1].pos.x -= 1.0f * 0.05;
+
+			if (::GetAsyncKeyState('D') & 0x8000f)
+				Meshes[1].pos.x += 1.0f * 0.05;
+			break;
 		}
 		if (::GetAsyncKeyState(VK_LBUTTON) & 0x8000f) { // Left button click to select
 			GetCursorPos(&pos);
@@ -585,18 +615,14 @@ bool Display(float timeDelta)
 			if (RaySphereIntTest(&ray, &bound1)) {
 				if (dist[0] < distFromCamera(bound1._center)) {
 					selected = 0;
-					hit = true;
-					MessageBox(NULL, _T("HIT Plane"), _T("Hit PLANE"), MB_OK);
 				}
 			}
 			else if (RaySphereIntTest(&ray, &bound2)) {
 				if (dist[1] < distFromCamera(bound2._center)) {
 					selected = 1;
-					hit = true;
-					MessageBox(NULL, _T("HIT Monkey"), _T("Hit MONKEY"), MB_OK);
 				}
 			}
-			if(!hit) {
+			else {
 				selected = -1;
 			}
 		}
