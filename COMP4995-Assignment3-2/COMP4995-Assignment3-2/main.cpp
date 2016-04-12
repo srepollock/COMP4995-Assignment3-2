@@ -1,5 +1,7 @@
 #include "d3dUtility.h"
 #include "camera.h"
+#include "Ray.h"
+#include "BoundingSphere.h"
 
 //
 // Globals
@@ -7,6 +9,11 @@
 
 IDirect3DDevice9* Device = 0;
 D3DXMATRIX World;
+IDirect3DVertexBuffer9* VB = 0;
+IDirect3DTexture9* MirrorTex = 0;
+D3DMATERIAL9 MirrorMtrl = d3d::WHITE_MTRL;
+BoundingSphere bound1, bound2, bound3;
+Ray ray;
 
 struct Vertex {
 	Vertex() {
@@ -72,6 +79,86 @@ template<class T> void Delete(T t)
 }
 
 std::vector<MeshStruct> Meshes;
+
+Ray d3d::CalcPickingRay(int x, int y)
+{
+	float px = 0.0f;
+	float py = 0.0f;
+
+	D3DVIEWPORT9 vp;
+	Device->GetViewport(&vp);
+
+	D3DXMATRIX proj;
+	Device->GetTransform(D3DTS_PROJECTION, &proj);
+
+	px = (((2.0f*x) / vp.Width) - 1.0f) / proj(0, 0);
+	py = (((-2.0f*y) / vp.Height) + 1.0f) / proj(1, 1);
+
+	Ray ray;
+	ray._origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	ray._direction = D3DXVECTOR3(px, py, 1.0f);
+
+	return ray;
+}
+
+void TransformRay(Ray* ray, D3DXMATRIX* T)
+{
+	// transform the ray's origin, w = 1.
+	D3DXVec3TransformCoord(
+		&ray->_origin,
+		&ray->_origin,
+		T);
+
+	// transform the ray's direction, w = 0.
+	D3DXVec3TransformNormal(
+		&ray->_direction,
+		&ray->_direction,
+		T);
+
+	// normalize the direction
+	D3DXVec3Normalize(&ray->_direction, &ray->_direction);
+}
+
+bool RaySphereIntTest(Ray* ray, BoundingSphere* sphere)
+{
+	D3DXVECTOR3 v = ray->_origin - sphere->_center;
+
+	float b = 2.0f * D3DXVec3Dot(&ray->_direction, &v);
+	float c = D3DXVec3Dot(&v, &v) - (sphere->_radius * sphere->_radius);
+
+	// find the discriminant
+	float discriminant = (b * b) - (4.0f * c);
+
+	// test for imaginary number
+	if (discriminant < 0.0f)
+		return false;
+
+	discriminant = sqrtf(discriminant);
+
+	float s0 = (-b + discriminant) / 2.0f;
+	float s1 = (-b - discriminant) / 2.0f;
+
+	// if a solution is >= 0, then we intersected the sphere
+	if (s0 >= 0.0f || s1 >= 0.0f)
+		return true;
+
+	return false;
+}
+
+void setupBoundingSphere() {
+	bound1._center = Meshes[0].pos; // plane
+	bound1._radius = 1.75f;
+
+	bound2._center = Meshes[1].pos; // monkey
+	bound2._radius = 3.0f;
+}
+
+float distFromCamera(D3DXVECTOR3 vec) {
+	float x = vec.x + ray._origin.x;
+	float y = vec.y + ray._origin.y;
+	float z = vec.z + ray._origin.z;
+	return sqrt((x * x) + (y * y) + (z * z));
+}
 
 bool LoadMesh(char * filename, int pos) {
 	//temporary meshes
@@ -163,33 +250,134 @@ bool LoadMesh(char * filename, int pos) {
 	switch (pos) {
 	case 0:
 		ret[0] = 0.0f;
-		ret[1] = 0.5f;
-		ret[2] = -7.5f;
+		ret[1] = 3.0f;
+		ret[2] = -7.0f;
 		break;
 	case 1:
-		ret[0] = 7.5f;
-		ret[1] = 0.5f;
-		ret[2] = 2.5f;
+		ret[0] = -2.0f;
+		ret[1] = 0.0f;
+		ret[2] = -7.0f;
 		break;
 	case 2:
-		ret[0] = 0.0f;
-		ret[1] = 0.5f;
-		ret[2] = 7.5f;
-		break;
-	case 3: // obj 4
-		ret[0] = 0.0f;
-		ret[1] = 0.0f;
-		ret[2] = 0.0f;
-		break;
-	case 4: // obj 5
-		ret[0] = 0.0f;
-		ret[1] = 0.0f;
-		ret[2] = 0.0f;
+		ret[0] = -7.0f;
+		ret[1] = 1.0f;
+		ret[2] = -7.0f;
 		break;
 	}
 
 	MeshStruct retstruct(Mesh, Mtrls, Textures, { ret[0],ret[1],ret[2] });
 	Meshes.push_back(retstruct);
+}
+
+void DrawBoxInit() {
+	Device->CreateVertexBuffer(
+		36 * sizeof(Vertex),
+		0, // usage
+		Vertex::FVF,
+		D3DPOOL_MANAGED,
+		&VB,
+		0);
+
+	Vertex* vert = 0;
+	VB->Lock(0, 0, (void**)&vert, 0);
+
+	// Mirror
+	// Left Face
+	vert[0] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[1] = Vertex(-2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vert[2] = Vertex(-2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+
+	vert[3] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[4] = Vertex(-2.5f, 5.0f, -0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[5] = Vertex(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+
+	//Front Face
+	vert[6] = Vertex(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[7] = Vertex(-2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vert[8] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+
+	vert[9] = Vertex(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[10] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[11] = Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+
+	//Right Face
+	vert[12] = Vertex(2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vert[13] = Vertex(2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[14] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+
+	vert[15] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[16] = Vertex(2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[17] = Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+
+	//Back Face
+	vert[18] = Vertex(-2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vert[19] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[20] = Vertex(2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+
+	vert[21] = Vertex(2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[22] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[23] = Vertex(2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+
+	//Top Face
+	vert[24] = Vertex(-2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vert[25] = Vertex(-2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[26] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+
+	vert[27] = Vertex(-2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[28] = Vertex(2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[29] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+
+	//Bottem Face
+	vert[30] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[31] = Vertex(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vert[32] = Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+
+	vert[33] = Vertex(2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[34] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[35] = Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+
+	VB->Unlock();
+}
+
+bool RenderBox() {
+	D3DXMATRIX I;
+	D3DXMatrixIdentity(&I);
+	Device->SetTransform(D3DTS_WORLD, &I);
+
+	Device->SetStreamSource(0, VB, 0, sizeof(Vertex));
+	Device->SetFVF(Vertex::FVF);
+
+	// draw the mirror
+	Device->SetMaterial(&MirrorMtrl);
+	Device->SetTexture(0, MirrorTex);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 6, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 12, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 18, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 24, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 30, 2);
+	return true;
+}
+
+bool RenderBox(int i) {
+	D3DXMATRIX I;
+	D3DXMatrixIdentity(&I);
+	Device->SetTransform(D3DTS_WORLD, &I);
+
+	Device->SetStreamSource(0, VB, 0, sizeof(Vertex));
+	Device->SetFVF(Vertex::FVF);
+
+	// draw the mirror
+	Device->SetMaterial(&MirrorMtrl);
+	Device->SetTexture(0, MirrorTex);
+	Device->SetRenderState(D3DRS_STENCILREF, i + 1);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 6, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 12, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 18, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 24, 2);
+	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 30, 2);
+	return true;
 }
 
 bool RenderMesh(MeshStruct mesh) {
@@ -204,16 +392,112 @@ bool RenderMesh(MeshStruct mesh) {
 	return true;
 }
 
+// TODO FIX
+bool RenderMirrorMesh(MeshStruct mesh, D3DXMATRIX W) {
+	Device->SetTransform(D3DTS_WORLD, &W);
+	for (int i = 0; i < mesh.mtrls.size(); i++) {
+		Device->SetMaterial(&mesh.mtrls[i]);
+		Device->SetTexture(0, mesh.tex[i]);
+		mesh.mesh->DrawSubset(i);
+	}
+	return true;
+}
+
+bool RenderWhiteMesh(MeshStruct mesh) {
+	D3DXMATRIX world;
+	D3DXMatrixTranslation(&world, mesh.pos.x, mesh.pos.y, mesh.pos.z);
+	Device->SetTransform(D3DTS_WORLD, &world);
+	for (int i = 0; i < mesh.mtrls.size(); i++) {
+		Device->SetMaterial(&d3d::WHITE_MTRL);
+		Device->SetTexture(0, mesh.tex[i]);
+		mesh.mesh->DrawSubset(i);
+	}
+	return true;
+}
+
+bool RenderMirror() {
+	D3DXPLANE planes[6] = {
+		{ 1.0f, 0.0f, 0.0f, 2.5f },
+		{ 0.0f, 1.0f, 0.0f, 0.0f },
+		{ -1.0f, 0.0f, 0.0f, 2.5f },
+		{ 0.0f, 0.0f, -1.0f, 5.0f },
+		{ 0.0f, -1.0f, 0.0f, 5.0f },
+		{ 0.0f, 1.0f, 0.0f, 0.0f }
+	};
+
+	Device->SetRenderState(D3DRS_STENCILENABLE, true);
+	Device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
+	Device->SetRenderState(D3DRS_STENCILREF, 0x1);
+	Device->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
+	Device->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
+	Device->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
+	Device->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
+	Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_REPLACE);
+
+	// disable writes to the depth and back buffers
+	Device->SetRenderState(D3DRS_ZWRITEENABLE, false);
+	Device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
+	Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
+	// draw the mirror to the stencil buffer
+	RenderBox();
+
+	// re-enable depth writes
+	Device->SetRenderState(D3DRS_ZWRITEENABLE, true);
+
+	// clear depth buffer and blend the reflected teapot with the mirror
+	Device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
+	Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
+	Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+
+	for (int p = 0; p < 6; p++) {
+		// only draw reflected teapot to the pixels where the mirror
+		// was drawn to.
+		Device->SetRenderState(D3DRS_STENCILREF, p + 1);
+		Device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_EQUAL);
+		Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
+
+		// position reflection
+		D3DXMATRIX W, T, R;
+		D3DXMatrixReflect(&R, &planes[p]);
+
+		D3DXMatrixTranslation(&T,
+			Meshes[0].pos.x,
+			Meshes[0].pos.y,
+			Meshes[0].pos.z);
+
+		W = T * R;
+
+		// Finally, draw the reflected teapot
+		Device->SetTransform(D3DTS_WORLD, &W);
+		// Set Clipping planes
+		Device->SetClipPlane(0, planes[p]);
+		Device->SetRenderState(D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0);
+
+		RenderMirrorMesh(Meshes[0], W);
+
+		Device->SetRenderState(D3DRS_CLIPPLANEENABLE, false);
+	}
+
+	//Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+
+	// Restore render states.
+	Device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+	Device->SetRenderState(D3DRS_STENCILENABLE, false);
+	Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	return true;
+}
+
 //
 // Framework functions
 //
 bool Setup()
 {
 	// Load the models
-
-	LoadMesh("box.x", 0);
-	LoadMesh("Harrier.x", 1);
-	LoadMesh("Monkey.x", 2);
+	DrawBoxInit(); // Only called here
+	LoadMesh("Harrier.x", 0);
+	LoadMesh("Monkey.x", 1);
 
 	//
 	// Setup a basic scene.  The scene will be created the
@@ -248,6 +532,9 @@ bool Display(float timeDelta)
 {
 	if (Device)
 	{
+		bool hit = false;
+		float dist[] = { distFromCamera(Meshes[0].pos),
+						 distFromCamera(Meshes[1].pos) };
 		//
 		// Update: Update the camera.
 		//
@@ -286,6 +573,33 @@ bool Display(float timeDelta)
 			SetCursorPos(Width / 2, Height / 2);
 			GetCursorPos(&cur);
 		}
+		if (::GetAsyncKeyState(VK_LBUTTON) & 0x8000f) { // Left button click to select
+			GetCursorPos(&pos);
+			ray = d3d::CalcPickingRay(pos.x, pos.y);
+			D3DXMATRIX temp;
+			D3DXMATRIX V;
+			TheCamera.getViewMatrix(&V);
+			D3DXMatrixInverse(&temp, 0, &V);
+			TransformRay(&ray, &temp);
+			// check each
+			if (RaySphereIntTest(&ray, &bound1)) {
+				if (dist[0] < distFromCamera(bound1._center)) {
+					selected = 0;
+					hit = true;
+					MessageBox(NULL, _T("HIT Plane"), _T("Hit PLANE"), MB_OK);
+				}
+			}
+			else if (RaySphereIntTest(&ray, &bound2)) {
+				if (dist[1] < distFromCamera(bound2._center)) {
+					selected = 1;
+					hit = true;
+					MessageBox(NULL, _T("HIT Monkey"), _T("Hit MONKEY"), MB_OK);
+				}
+			}
+			if(!hit) {
+				selected = -1;
+			}
+		}
 
 		// Update the view matrix representing the cameras 
 		// new position/orientation.
@@ -298,15 +612,20 @@ bool Display(float timeDelta)
 		//
 
 		Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
-		Device->BeginScene();
+		Device->BeginScene(); // BEGIN SCENE
 
+		setupBoundingSphere();
+
+		RenderBox();
 		for (auto mesh : Meshes) {
 			RenderMesh(mesh);
 		}
 
 		d3d::DrawBasicScene(Device, 1.0f);
 
-		Device->EndScene();
+		RenderMirror();
+
+		Device->EndScene(); // END SCENE
 		Device->Present(0, 0, 0, 0);
 	}
 	return true;

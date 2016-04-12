@@ -15,7 +15,6 @@
 // vertex formats
 const DWORD d3d::Vertex::FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;
 
-
 bool d3d::InitD3D(
 	HINSTANCE hInstance,
 	int width, int height,
@@ -94,7 +93,7 @@ bool d3d::InitD3D(
 	D3DPRESENT_PARAMETERS d3dpp;
 	d3dpp.BackBufferWidth = width;
 	d3dpp.BackBufferHeight = height;
-	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
+	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
 	d3dpp.BackBufferCount = 1;
 	d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
 	d3dpp.MultiSampleQuality = 0;
@@ -103,7 +102,7 @@ bool d3d::InitD3D(
 	d3dpp.Windowed = windowed;
 	d3dpp.EnableAutoDepthStencil = true;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
-	d3dpp.Flags = 0;
+	d3dpp.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER; // If not set, we cannot lock the back buffer
 	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 	d3dpp.PresentationInterval = windowed ? 0 : D3DPRESENT_INTERVAL_IMMEDIATE;
 

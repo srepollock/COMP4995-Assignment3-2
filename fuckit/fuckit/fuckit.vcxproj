@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2A2B3444-FF17-40B5-92FF-8286695D9E18}</ProjectGuid>
+    <ProjectGuid>{7F88F49A-5BD9-4459-9DEB-E0A3F464A606}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>COMP4995Assignment32</RootNamespace>
+    <RootNamespace>fuckit</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -152,18 +152,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Basics.h" />
-    <ClInclude Include="BoundingSphere.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="d3dUtility.h" />
-    <ClInclude Include="DirectX.h" />
-    <ClInclude Include="Ray.h" />
+    <Image Include="..\..\..\..\..\..\Downloads\BookICode\Book Part II Code\Chapter 8\Stencil Mirror\brick0.jpg" />
+    <Image Include="..\..\..\..\..\..\Downloads\BookICode\Book Part II Code\Chapter 8\Stencil Mirror\chap8_0.jpg" />
+    <Image Include="..\..\..\..\..\..\Downloads\BookICode\Book Part II Code\Chapter 8\Stencil Mirror\checker.jpg" />
+    <Image Include="..\..\..\..\..\..\Downloads\BookICode\Book Part II Code\Chapter 8\Stencil Mirror\ice.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BoundingSphere.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="d3dUtility.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\Downloads\BookICode\Book Part II Code\Chapter 8\Stencil Mirror\d3dUtility.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\Downloads\BookICode\Book Part II Code\Chapter 8\Stencil Mirror\stencilmirror.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\..\Downloads\BookICode\Book Part II Code\Chapter 8\Stencil Mirror\d3dUtility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,8 +3,7 @@
 
 #include <d3dx9.h>
 
-class Camera
-{
+class Camera {
 public:
 	enum CameraType { LANDOBJECT, AIRCRAFT };
 

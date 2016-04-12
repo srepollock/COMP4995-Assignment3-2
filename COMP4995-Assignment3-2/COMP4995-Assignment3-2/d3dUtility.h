@@ -1,26 +1,9 @@
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// 
-// File: d3dUtility.h
-// 
-// Author: Frank Luna (C) All Rights Reserved
-//
-// System: AMD Athlon 1800+ XP, 512 DDR, Geforce 3, Windows XP, MSVC++ 7.0 
-//
-// Desc: Provides utility functions for simplifying common tasks.
-//          
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
 #ifndef __d3dUtilityH__
 #define __d3dUtilityH__
 
 #include "Basics.h"
-#pragma comment(lib,"d3dx9.lib")
-#pragma comment(lib,"d3d9")
-#include <d3d9.h>
-#include <d3dx9.h>
-#include <d3dx9tex.h>
-#include <vector>
-#include <limits>
+#include "DirectX.h"
+#include "Ray.h"
 
 namespace d3d
 {
@@ -156,6 +139,9 @@ namespace d3d
 
 		static const DWORD FVF;
 	};
+
+	// picking
+	Ray CalcPickingRay(int x, int y);
 }
 
 #endif // __d3dUtilityH__#pragma once
