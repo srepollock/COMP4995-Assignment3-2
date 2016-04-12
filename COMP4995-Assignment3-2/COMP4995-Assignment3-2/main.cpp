@@ -148,10 +148,10 @@ bool RaySphereIntTest(Ray* ray, BoundingSphere* sphere)
 
 void setupBoundingSphere() {
 	bound1._center = Meshes[0].pos; // plane
-	bound1._radius = 1.75f;
+	bound1._radius = 1.25f;
 
 	bound2._center = Meshes[1].pos; // monkey
-	bound2._radius = 3.0f;
+	bound2._radius = 1.5f;
 }
 
 float distFromCamera(D3DXVECTOR3 vec) {
@@ -534,6 +534,10 @@ bool Display(float timeDelta)
 	{
 		float dist[] = { distFromCamera(Meshes[0].pos),
 						 distFromCamera(Meshes[1].pos) };
+		float tempDist = 0;
+		for (float d : dist)
+			if (tempDist < d)
+				tempDist = d;
 		//
 		// Update: Update the camera.
 		//
@@ -577,10 +581,10 @@ bool Display(float timeDelta)
 			break;
 		case 0:
 			if (::GetAsyncKeyState('W') & 0x8000f)
-				Meshes[0].pos.y -= 1.0f * 0.05;
+				Meshes[0].pos.y += 1.0f * 0.05;
 
 			if (::GetAsyncKeyState('S') & 0x8000f)
-				Meshes[0].pos.y += 1.0f * 0.05;
+				Meshes[0].pos.y -= 1.0f * 0.05;
 
 			if (::GetAsyncKeyState('A') & 0x8000f)
 				Meshes[0].pos.x -= 1.0f * 0.05;
@@ -588,22 +592,34 @@ bool Display(float timeDelta)
 			if (::GetAsyncKeyState('D') & 0x8000f)
 				Meshes[0].pos.x += 1.0f * 0.05;
 
+			if (::GetAsyncKeyState('Z') & 0x8000f)
+				Meshes[0].pos.z -= 1.0f * 0.05;
+
+			if (::GetAsyncKeyState('X') & 0x8000f)
+				Meshes[0].pos.z += 1.0f * 0.05;
 			break;
 		case 1:
 			if (::GetAsyncKeyState('W') & 0x8000f)
-				Meshes[1].pos.y -= 1.0f * 0.05;
+				Meshes[1].pos.y += 1.0f * 0.05;
 
 			if (::GetAsyncKeyState('S') & 0x8000f)
-				Meshes[1].pos.y += 1.0f * 0.05;
+				Meshes[1].pos.y -= 1.0f * 0.05;
 
 			if (::GetAsyncKeyState('A') & 0x8000f)
 				Meshes[1].pos.x -= 1.0f * 0.05;
 
 			if (::GetAsyncKeyState('D') & 0x8000f)
 				Meshes[1].pos.x += 1.0f * 0.05;
+
+			if (::GetAsyncKeyState('Z') & 0x8000f)
+				Meshes[1].pos.z -= 1.0f * 0.05;
+
+			if (::GetAsyncKeyState('X') & 0x8000f)
+				Meshes[1].pos.z += 1.0f * 0.05;
 			break;
 		}
 		if (::GetAsyncKeyState(VK_LBUTTON) & 0x8000f) { // Left button click to select
+			selected = -1;
 			GetCursorPos(&pos);
 			ray = d3d::CalcPickingRay(pos.x, pos.y);
 			D3DXMATRIX temp;
@@ -612,18 +628,13 @@ bool Display(float timeDelta)
 			D3DXMatrixInverse(&temp, 0, &V);
 			TransformRay(&ray, &temp);
 			// check each
-			if (RaySphereIntTest(&ray, &bound1)) {
-				if (dist[0] < distFromCamera(bound1._center)) {
-					selected = 0;
-				}
+			if (RaySphereIntTest(&ray, &bound1) && dist[0] <= tempDist) {
+				// Plane is closer
+				selected = 0;
 			}
-			else if (RaySphereIntTest(&ray, &bound2)) {
-				if (dist[1] < distFromCamera(bound2._center)) {
-					selected = 1;
-				}
-			}
-			else {
-				selected = -1;
+			if (RaySphereIntTest(&ray, &bound2) && dist[1] <= tempDist) {
+				// Monkey is closer
+				selected = 1;
 			}
 		}
 
