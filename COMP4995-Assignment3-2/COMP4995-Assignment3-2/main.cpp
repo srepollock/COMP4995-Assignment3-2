@@ -360,7 +360,7 @@ bool RenderBox() {
 	return true;
 }
 
-bool RenderBox(int i) {
+bool RenderMirrorBox() {
 	D3DXMATRIX I;
 	D3DXMatrixIdentity(&I);
 	Device->SetTransform(D3DTS_WORLD, &I);
@@ -371,12 +371,17 @@ bool RenderBox(int i) {
 	// draw the mirror
 	Device->SetMaterial(&MirrorMtrl);
 	Device->SetTexture(0, MirrorTex);
-	Device->SetRenderState(D3DRS_STENCILREF, i + 1);
+	Device->SetRenderState(D3DRS_STENCILREF, 1);
 	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
+	Device->SetRenderState(D3DRS_STENCILREF, 2);
 	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 6, 2);
+	Device->SetRenderState(D3DRS_STENCILREF, 3);
 	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 12, 2);
+	Device->SetRenderState(D3DRS_STENCILREF, 4);
 	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 18, 2);
+	Device->SetRenderState(D3DRS_STENCILREF, 5);
 	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 24, 2);
+	Device->SetRenderState(D3DRS_STENCILREF, 6);
 	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 30, 2);
 	return true;
 }
@@ -441,7 +446,7 @@ bool RenderMirror() {
 	Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
 	// draw the mirror to the stencil buffer
-	RenderBox();
+	RenderMirrorBox();
 
 	// re-enable depth writes
 	Device->SetRenderState(D3DRS_ZWRITEENABLE, true);
@@ -654,6 +659,7 @@ bool Display(float timeDelta)
 		setupBoundingSphere();
 
 		RenderBox();
+
 		for (auto mesh : Meshes) {
 			RenderMesh(mesh);
 		}
