@@ -284,58 +284,58 @@ void DrawBoxInit() {
 
 	// Mirror
 	// Left Face
-	vert[0] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[1] = Vertex(-2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
-	vert[2] = Vertex(-2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[0] = Vertex( -2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[1] = Vertex( -2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vert[2] = Vertex( -2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
 
-	vert[3] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[4] = Vertex(-2.5f, 5.0f, -0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
-	vert[5] = Vertex(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+	vert[3] = Vertex( -2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[4] = Vertex( -2.5f, 5.0f, -0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[5] = Vertex( -2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
 
 	//Front Face
-	vert[6] = Vertex(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[7] = Vertex(-2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
-	vert[8] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[6] = Vertex( -2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[7] = Vertex( -2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vert[8] = Vertex(  2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
 
-	vert[9] = Vertex(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[10] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
-	vert[11] = Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+	vert[9] = Vertex( -2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[10] = Vertex( 2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[11] = Vertex( 2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
 
 	//Right Face
-	vert[12] = Vertex(2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
-	vert[13] = Vertex(2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[14] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[12] = Vertex( 2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vert[13] = Vertex( 2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[14] = Vertex( 2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
 
-	vert[15] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
-	vert[16] = Vertex(2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[17] = Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+	vert[15] = Vertex( 2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[16] = Vertex( 2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vert[17] = Vertex( 2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
 
 	//Back Face
 	vert[18] = Vertex(-2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
 	vert[19] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[20] = Vertex(2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[20] = Vertex( 2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
 
-	vert[21] = Vertex(2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[21] = Vertex( 2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
 	vert[22] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[23] = Vertex(2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+	vert[23] = Vertex( 2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
 
 	//Top Face
 	vert[24] = Vertex(-2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
 	vert[25] = Vertex(-2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[26] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[26] = Vertex( 2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
 
 	vert[27] = Vertex(-2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[28] = Vertex(2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
-	vert[29] = Vertex(2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+	vert[28] = Vertex( 2.5f, 5.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[29] = Vertex( 2.5f, 5.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
 
 	//Bottem Face
 	vert[30] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
 	vert[31] = Vertex(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
-	vert[32] = Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[32] = Vertex( 2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
 
-	vert[33] = Vertex(2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vert[33] = Vertex( 2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
 	vert[34] = Vertex(-2.5f, 0.0f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	vert[35] = Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+	vert[35] = Vertex( 2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
 
 	VB->Unlock();
 }
@@ -421,6 +421,14 @@ bool RenderWhiteMesh(MeshStruct mesh) {
 }
 
 bool RenderMirror() {
+	/*D3DXPLANE planes[6] = {
+		{ 1.0f, 0.0f, 0.0f, 2.5f },
+		{ 0.0f, 1.0f, 0.0f, 0.0f },
+		{ -1.0f, 0.0f, 0.0f, 2.5f },
+		{ 0.0f, 0.0f, -1.0f, 5.0f },
+		{ 0.0f, -1.0f, 0.0f, 5.0f },
+		{ 0.0f, 1.0f, 0.0f, 0.0f }
+	};*/
 	D3DXPLANE planes[6] = {
 		{ 1.0f, 0.0f, 0.0f, 2.5f },
 		{ 0.0f, 1.0f, 0.0f, 0.0f },
@@ -430,59 +438,132 @@ bool RenderMirror() {
 		{ 0.0f, 1.0f, 0.0f, 0.0f }
 	};
 
-	Device->SetRenderState(D3DRS_STENCILENABLE, true);
-	Device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
-	Device->SetRenderState(D3DRS_STENCILREF, 0x1);
-	Device->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
-	Device->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
-	Device->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
-	Device->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
-	Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_REPLACE);
+	
+	//Device->SetRenderState(D3DRS_STENCILENABLE, true);
+	//Device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
+	//Device->SetRenderState(D3DRS_STENCILREF, 0x1);
+	//Device->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
+	//Device->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
+	//Device->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
+	//Device->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
+	//Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_REPLACE);
 
-	// disable writes to the depth and back buffers
-	Device->SetRenderState(D3DRS_ZWRITEENABLE, false);
-	Device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-	Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
-	Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	//// disable writes to the depth and back buffers
+	//Device->SetRenderState(D3DRS_ZWRITEENABLE, false);
+	//Device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	//Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
+	//Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
-	// draw the mirror to the stencil buffer
-	RenderMirrorBox();
+	//// draw the mirror to the stencil buffer
+	//RenderMirrorBox();
 
-	// re-enable depth writes
-	Device->SetRenderState(D3DRS_ZWRITEENABLE, true);
+	//// re-enable depth writes
+	//Device->SetRenderState(D3DRS_ZWRITEENABLE, true);
 
-	// clear depth buffer and blend the reflected teapot with the mirror
-	Device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
-	Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
-	Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+	//// clear depth buffer and blend the reflected teapot with the mirror
+	//Device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
+	//Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
+	//Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 
-	for (int p = 0; p < 6; p++) {
-		// only draw reflected teapot to the pixels where the mirror
-		// was drawn to.
-		Device->SetRenderState(D3DRS_STENCILREF, p + 1);
-		Device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_EQUAL);
-		Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
+	D3DXMATRIX I;
+	D3DXMatrixIdentity(&I);
 
-		// position reflection
-		D3DXMATRIX W, T, R;
-		D3DXMatrixReflect(&R, &planes[p]);
+	for (int i = 0; i < 6; i++) {
+		// Clear stencil-buffer in-between drawing individual mirror-faces!
+		Device->Clear(0, 0, D3DCLEAR_STENCIL, NULL, 1.0f, 0);
+		Device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 
-		D3DXMatrixTranslation(&T,
-			Meshes[0].pos.x,
-			Meshes[0].pos.y,
-			Meshes[0].pos.z);
+		Device->SetRenderState(D3DRS_STENCILENABLE, true);
+		Device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
+		Device->SetRenderState(D3DRS_STENCILREF, i + 1);  // 0x1
+		Device->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
+		Device->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
+		Device->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
+		Device->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
+		Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_REPLACE);
 
-		W = T * R;
 
-		// Finally, draw the reflected teapot
-		Device->SetTransform(D3DTS_WORLD, &W);
-		// Set Clipping planes
-		Device->SetClipPlane(0, planes[p]);
+
+		// disable writes to the depth and back buffers
+		Device->SetRenderState(D3DRS_ZWRITEENABLE, false);
+		Device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+		Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
+		Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+		// draw the mirror to the stencil buffer
+		Device->SetStreamSource(0, VB, 0, sizeof(Vertex));
+		Device->SetFVF(Vertex::FVF);
+		Device->SetMaterial(&MirrorMtrl);
+		Device->SetTexture(0, MirrorTex);
+		Device->SetTransform(D3DTS_WORLD, &I);
+		Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0 + 6 * i, 2);		// Draw mirror primitive (pulls from vertex-buffer)
+																		// re-enable depth writes
+		Device->SetRenderState(D3DRS_ZWRITEENABLE, true);
+
+		// Clear depth buffer to disable re-render of mirror primaries
+		Device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
+
+
+		// Set device states for blending of mirrored image onto mirror surface
+		Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
+		Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+
+		// Device->SetTransform(D3DTS_WORLD, &W);	
+		Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW); // Moved up two lines
+
+		Device->SetClipPlane(0, planes[i]);
 		Device->SetRenderState(D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0);
 
-		RenderMirrorMesh(Meshes[0], W);
+		for (int p = 0; p < 6; p++) {
+			// only draw reflected teapot to the pixels where the mirror
+			// was drawn to.
+			Device->SetRenderState(D3DRS_STENCILREF, p + 1);
+			Device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_EQUAL);
+			Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
 
-		Device->SetRenderState(D3DRS_CLIPPLANEENABLE, false);
+
+			// Plane
+			// position reflection
+			D3DXMATRIX W, T, R;
+			D3DXMatrixReflect(&R, &planes[p]);
+
+			D3DXMatrixTranslation(&T,
+				Meshes[0].pos.x,
+				Meshes[0].pos.y,
+				Meshes[0].pos.z);
+
+			W = T * R;
+
+			// Finally, draw the reflected teapot
+			Device->SetTransform(D3DTS_WORLD, &W);
+			// Set Clipping planes
+			Device->SetClipPlane(0, planes[p]);
+			Device->SetRenderState(D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0);
+
+			RenderMirrorMesh(Meshes[0], W);
+			// End Plane
+
+			// Monkey
+			D3DXMATRIX W2, T2;
+			D3DXMatrixReflect(&R, &planes[p]);
+
+			D3DXMatrixTranslation(&T2,
+				Meshes[1].pos.x,
+				Meshes[1].pos.y,
+				Meshes[1].pos.z);
+
+			W2 = T2 * R;
+
+			// Finally, draw the reflected teapot
+			Device->SetTransform(D3DTS_WORLD, &W2);
+			// Set Clipping planes
+			Device->SetClipPlane(0, planes[p]);
+			Device->SetRenderState(D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0);
+
+			RenderMirrorMesh(Meshes[1], W2);
+			// End Monkey
+
+			Device->SetRenderState(D3DRS_CLIPPLANEENABLE, false);
+		}
 	}
 
 	//Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
@@ -491,6 +572,7 @@ bool RenderMirror() {
 	Device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
 	Device->SetRenderState(D3DRS_STENCILENABLE, false);
 	Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
 	return true;
 }
 
@@ -585,41 +667,41 @@ bool Display(float timeDelta)
 			}
 			break;
 		case 0:
-			if (::GetAsyncKeyState('W') & 0x8000f)
+			if (::GetAsyncKeyState('R') & 0x8000f)
 				Meshes[0].pos.y += 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('S') & 0x8000f)
+			if (::GetAsyncKeyState('F') & 0x8000f)
 				Meshes[0].pos.y -= 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('A') & 0x8000f)
+			if (::GetAsyncKeyState('D') & 0x8000f)
 				Meshes[0].pos.x -= 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('D') & 0x8000f)
+			if (::GetAsyncKeyState('A') & 0x8000f)
 				Meshes[0].pos.x += 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('Z') & 0x8000f)
+			if (::GetAsyncKeyState('W') & 0x8000f)
 				Meshes[0].pos.z -= 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('X') & 0x8000f)
+			if (::GetAsyncKeyState('S') & 0x8000f)
 				Meshes[0].pos.z += 1.0f * 0.05;
 			break;
 		case 1:
-			if (::GetAsyncKeyState('W') & 0x8000f)
+			if (::GetAsyncKeyState('R') & 0x8000f)
 				Meshes[1].pos.y += 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('S') & 0x8000f)
+			if (::GetAsyncKeyState('F') & 0x8000f)
 				Meshes[1].pos.y -= 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('A') & 0x8000f)
+			if (::GetAsyncKeyState('D') & 0x8000f)
 				Meshes[1].pos.x -= 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('D') & 0x8000f)
+			if (::GetAsyncKeyState('A') & 0x8000f)
 				Meshes[1].pos.x += 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('Z') & 0x8000f)
+			if (::GetAsyncKeyState('W') & 0x8000f)
 				Meshes[1].pos.z -= 1.0f * 0.05;
 
-			if (::GetAsyncKeyState('X') & 0x8000f)
+			if (::GetAsyncKeyState('S') & 0x8000f)
 				Meshes[1].pos.z += 1.0f * 0.05;
 			break;
 		}
