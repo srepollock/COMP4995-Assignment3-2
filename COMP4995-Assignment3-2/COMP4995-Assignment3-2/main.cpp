@@ -2,6 +2,7 @@
 #include "camera.h"
 #include "Ray.h"
 #include "BoundingSphere.h"
+#include "pSystem.h"
 
 //
 // Globals
@@ -15,6 +16,7 @@ D3DMATERIAL9 MirrorMtrl = d3d::WHITE_MTRL;
 BoundingSphere bound1, bound2, bound3;
 Ray ray;
 bool hit = false;
+psys::PSystem* Sno = 0;
 
 struct Vertex {
 	Vertex() {
@@ -544,7 +546,12 @@ bool Setup()
 	DrawBoxInit(); // Only called here
 	LoadMesh("Harrier.x", 0);
 	LoadMesh("Monkey.x", 1);
-
+	// sno
+	d3d::BoundingBox boundingBox;
+	boundingBox._min = D3DXVECTOR3(-10.0f, -10.0f, -10.0f);
+	boundingBox._max = D3DXVECTOR3(10.0f, 10.0f, 10.0f);
+	Sno = new psys::Snow(&boundingBox, 5000);
+	Sno->init(Device, "snowflake.dds");
 	//
 	// Setup a basic scene.  The scene will be created the
 	// first time this function is called.
@@ -571,6 +578,7 @@ bool Setup()
 void Cleanup()
 {
 	// pass 0 for the first parameter to instruct cleanup.
+	d3d::Delete<psys::PSystem*>(Sno);
 	d3d::DrawBasicScene(0, 0.0f);
 }
 
@@ -689,6 +697,8 @@ bool Display(float timeDelta)
 		D3DXMATRIX V;
 		TheCamera.getViewMatrix(&V);
 		Device->SetTransform(D3DTS_VIEW, &V);
+		// sno
+		Sno->update(timeDelta);
 
 		//
 		// Render
@@ -708,6 +718,12 @@ bool Display(float timeDelta)
 		d3d::DrawBasicScene(Device, 1.0f);
 
 		RenderMirror();
+
+		D3DXMATRIX I;
+		D3DXMatrixIdentity(&I);
+		// order important, render snow last.
+		Device->SetTransform(D3DTS_WORLD, &I);
+		Sno->render();
 
 		Device->EndScene(); // END SCENE
 		Device->Present(0, 0, 0, 0);

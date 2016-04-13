@@ -142,6 +142,22 @@ namespace d3d
 
 	// picking
 	Ray CalcPickingRay(int x, int y);
+	
+	//
+	// Randomness
+	//
+
+	// Desc: Return random float in [lowBound, highBound] interval.
+	float GetRandomFloat(float lowBound, float highBound);
+
+
+	// Desc: Returns a random vector in the bounds specified by min and max.
+	void GetRandomVector(
+		D3DXVECTOR3* out,
+		D3DXVECTOR3* min,
+		D3DXVECTOR3* max);
+
+	DWORD FtoDw(float f);
 }
 
 #endif // __d3dUtilityH__#pragma once

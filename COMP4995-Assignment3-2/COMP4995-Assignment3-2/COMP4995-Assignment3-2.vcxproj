@@ -157,6 +157,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="d3dUtility.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="pSystem.h" />
     <ClInclude Include="Ray.h" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +165,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="d3dUtility.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pSystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
