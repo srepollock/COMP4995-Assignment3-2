@@ -421,14 +421,6 @@ bool RenderWhiteMesh(MeshStruct mesh) {
 }
 
 bool RenderMirror() {
-	/*D3DXPLANE planes[6] = {
-		{ 1.0f, 0.0f, 0.0f, 2.5f },
-		{ 0.0f, 1.0f, 0.0f, 0.0f },
-		{ -1.0f, 0.0f, 0.0f, 2.5f },
-		{ 0.0f, 0.0f, -1.0f, 5.0f },
-		{ 0.0f, -1.0f, 0.0f, 5.0f },
-		{ 0.0f, 1.0f, 0.0f, 0.0f }
-	};*/
 	D3DXPLANE planes[6] = {
 		{ 1.0f, 0.0f, 0.0f, 2.5f },
 		{ 0.0f, 1.0f, 0.0f, 0.0f },
@@ -437,33 +429,6 @@ bool RenderMirror() {
 		{ 0.0f, -1.0f, 0.0f, 5.0f },
 		{ 0.0f, 1.0f, 0.0f, 0.0f }
 	};
-
-	
-	//Device->SetRenderState(D3DRS_STENCILENABLE, true);
-	//Device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
-	//Device->SetRenderState(D3DRS_STENCILREF, 0x1);
-	//Device->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
-	//Device->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
-	//Device->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
-	//Device->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
-	//Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_REPLACE);
-
-	//// disable writes to the depth and back buffers
-	//Device->SetRenderState(D3DRS_ZWRITEENABLE, false);
-	//Device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-	//Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
-	//Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-
-	//// draw the mirror to the stencil buffer
-	//RenderMirrorBox();
-
-	//// re-enable depth writes
-	//Device->SetRenderState(D3DRS_ZWRITEENABLE, true);
-
-	//// clear depth buffer and blend the reflected teapot with the mirror
-	//Device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
-	//Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
-	//Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 
 	D3DXMATRIX I;
 	D3DXMatrixIdentity(&I);
@@ -481,8 +446,6 @@ bool RenderMirror() {
 		Device->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
 		Device->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
 		Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_REPLACE);
-
-
 
 		// disable writes to the depth and back buffers
 		Device->SetRenderState(D3DRS_ZWRITEENABLE, false);
@@ -502,7 +465,6 @@ bool RenderMirror() {
 		// Clear depth buffer to disable re-render of mirror primaries
 		Device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 
-
 		// Set device states for blending of mirrored image onto mirror surface
 		Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
 		Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
@@ -519,7 +481,6 @@ bool RenderMirror() {
 			Device->SetRenderState(D3DRS_STENCILREF, p + 1);
 			Device->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_EQUAL);
 			Device->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
-
 
 			// Plane
 			// position reflection
@@ -565,8 +526,6 @@ bool RenderMirror() {
 			Device->SetRenderState(D3DRS_CLIPPLANEENABLE, false);
 		}
 	}
-
-	//Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
 	// Restore render states.
 	Device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
