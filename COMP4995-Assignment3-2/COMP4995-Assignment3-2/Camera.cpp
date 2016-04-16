@@ -1,5 +1,5 @@
 #include "Camera.h"
-
+// Camera constructor
 Camera::Camera()
 {
 	_cameraType = AIRCRAFT;
@@ -9,7 +9,7 @@ Camera::Camera()
 	_up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	_look = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 }
-
+// Cmaera constructor with camera type
 Camera::Camera(CameraType cameraType)
 {
 	_cameraType = cameraType;
@@ -19,37 +19,43 @@ Camera::Camera(CameraType cameraType)
 	_up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	_look = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 }
-
+// Camera destructor
 Camera::~Camera()
 {
 
 }
-
+// Gets the current position of the camera
+//param pos: Pointer to the position to store the current camera position in
 void Camera::getPosition(D3DXVECTOR3* pos)
 {
 	*pos = _pos;
 }
-
+// Sets the current position of the camer
+//param pos: Pointer to the new position object
 void Camera::setPosition(D3DXVECTOR3* pos)
 {
 	_pos = *pos;
 }
-
+// Gets looking right
+//param right: Right vector
 void Camera::getRight(D3DXVECTOR3* right)
 {
 	*right = _right;
 }
-
+// Gets looking up
+//param right: Up vector
 void Camera::getUp(D3DXVECTOR3* up)
 {
 	*up = _up;
 }
-
+// Gets looking vector
+//param right: Look vector
 void Camera::getLook(D3DXVECTOR3* look)
 {
 	*look = _look;
 }
-
+// Walk the camera by units
+//param units: Units to move the camera forwards/backwards by
 void Camera::walk(float units)
 {
 	// move only on xz plane for land object
@@ -59,7 +65,8 @@ void Camera::walk(float units)
 	if (_cameraType == AIRCRAFT)
 		_pos += _look * units;
 }
-
+// Strafe the camera by units
+//param units: Units to move the camera left/right by
 void Camera::strafe(float units)
 {
 	// move only on xz plane for land object
@@ -69,7 +76,8 @@ void Camera::strafe(float units)
 	if (_cameraType == AIRCRAFT)
 		_pos += _right * units;
 }
-
+// Fly the camera by units
+//param units: Units to move the camera up/down by
 void Camera::fly(float units)
 {
 	// move only on y-axis for land object
@@ -79,7 +87,8 @@ void Camera::fly(float units)
 	if (_cameraType == AIRCRAFT)
 		_pos += _up * units;
 }
-
+// Pitch
+//param angle: Angle to pitch the camera by
 void Camera::pitch(float angle)
 {
 	D3DXMATRIX T;
@@ -89,7 +98,8 @@ void Camera::pitch(float angle)
 	D3DXVec3TransformCoord(&_up, &_up, &T);
 	D3DXVec3TransformCoord(&_look, &_look, &T);
 }
-
+// Yaw
+//param angle: Angle to yaw the camera by
 void Camera::yaw(float angle)
 {
 	D3DXMATRIX T;
@@ -106,7 +116,8 @@ void Camera::yaw(float angle)
 	D3DXVec3TransformCoord(&_right, &_right, &T);
 	D3DXVec3TransformCoord(&_look, &_look, &T);
 }
-
+// Roll
+//param angle: Angle to roll the camera by
 void Camera::roll(float angle)
 {
 	// only roll for aircraft type
@@ -120,7 +131,8 @@ void Camera::roll(float angle)
 		D3DXVec3TransformCoord(&_up, &_up, &T);
 	}
 }
-
+// Gets the current view matrix of the camera
+//param V: Pointer to the view to store the current camera position
 void Camera::getViewMatrix(D3DXMATRIX* V)
 {
 	// Keep camera's axes orthogonal to eachother
@@ -142,7 +154,8 @@ void Camera::getViewMatrix(D3DXMATRIX* V)
 	(*V)(2, 0) = _right.z; (*V)(2, 1) = _up.z; (*V)(2, 2) = _look.z; (*V)(2, 3) = 0.0f;
 	(*V)(3, 0) = x;        (*V)(3, 1) = y;     (*V)(3, 2) = z;       (*V)(3, 3) = 1.0f;
 }
-
+// Sets the type of the camera
+//param cameraType: Type to change the camera to
 void Camera::setCameraType(CameraType cameraType)
 {
 	_cameraType = cameraType;

@@ -8,20 +8,32 @@
 // Globals
 //
 
+// Pointer to the device
 IDirect3DDevice9* Device = 0;
+// World matrix
 D3DXMATRIX World;
+// Pointer to vertex buffer
 IDirect3DVertexBuffer9* VB = 0;
+// Texture for the mirror
 IDirect3DTexture9* MirrorTex = 0;
+// Material for the mirror
 D3DMATERIAL9 MirrorMtrl = d3d::WHITE_MTRL;
+// Bouding spheres for the objects
 BoundingSphere bound1, bound2, bound3;
+// Ray object for picking
 Ray ray;
+// Boolean if we hit an object or not. // Toggles
 bool hit = false;
+// PSystem pointer for snow
 psys::PSystem* Sno = 0;
 
+// Vertex structure for a vertex object
 struct Vertex {
+	// Constructor for a clean object
 	Vertex() {
 	}
 
+	// Constructor for a basic object
 	Vertex(float x, float y, float z,
 		float nx, float ny, float nz,
 		float u, float v) {
@@ -35,28 +47,40 @@ struct Vertex {
 		_v = v;
 	}
 
+	// x,y,z coords
 	float _x, _y, _z;
+	// normalized x,y,z coords
 	float _nx, _ny, _nz;
+	// u,v coords
 	float _u, _v;
 
+	// DWORD for the field of view
 	static const DWORD FVF;
 };
+// Sets a default field view for the vertex class
 const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;
 
+// Constant screen width
 const int Width = SCREEN_WIDTH;
+// Constant screen heigh
 const int Height = SCREEN_HEIGHT;
-
+// Position of the mouse after and before movement
 POINT pos, cur;
-
+// Currently selected object // Updates with picking
 int selected = -1; // Changes with picking
-
+// Camera object for the camera object & type of camera
 Camera TheCamera(Camera::AIRCRAFT);
-
+// Structure for a meshstruct to hold all the elements of a mesh
 struct MeshStruct {
+	// Mesh pointer
 	ID3DXMesh* mesh;
+	// Vector list of materials for the mesh
 	std::vector<D3DMATERIAL9> mtrls;
+	// IDirect3DTexture pointer to all the textures of the mesh
 	std::vector<IDirect3DTexture9*> tex;
+	// Current position of the mesh
 	D3DXVECTOR3 pos;
+	// Constructor for the meshstruct object
 	MeshStruct(ID3DXMesh* m, std::vector<D3DMATERIAL9> mtrl, std::vector<IDirect3DTexture9*> t, D3DXVECTOR3 p) {
 		mesh = m;
 		mtrls = mtrl;
@@ -64,6 +88,7 @@ struct MeshStruct {
 		pos = p;
 	}
 };
+// Generic release method
 template<class T> void Release(T t)
 {
 	if (t)
@@ -72,6 +97,7 @@ template<class T> void Release(T t)
 		t = 0;
 	}
 }
+// Generic delete method
 template<class T> void Delete(T t)
 {
 	if (t)
@@ -80,9 +106,12 @@ template<class T> void Delete(T t)
 		t = 0;
 	}
 }
-
+// Global vector array of meshes
 std::vector<MeshStruct> Meshes;
-
+// Calculate the picking array of the position x,y
+//param X: X position
+//param Y: Y position
+//returns: Ray object
 Ray d3d::CalcPickingRay(int x, int y)
 {
 	float px = 0.0f;
@@ -103,7 +132,9 @@ Ray d3d::CalcPickingRay(int x, int y)
 
 	return ray;
 }
-
+// Changes the Ray object position
+//param ray: Pointer to the current Ray object
+//param T: Matrix to transform the Ray object with
 void TransformRay(Ray* ray, D3DXMATRIX* T)
 {
 	// transform the ray's origin, w = 1.
@@ -121,7 +152,10 @@ void TransformRay(Ray* ray, D3DXMATRIX* T)
 	// normalize the direction
 	D3DXVec3Normalize(&ray->_direction, &ray->_direction);
 }
-
+// Checks if the ray hit the bouding sphere or not
+//param ray: Current ray
+//param sphere: Check if the ray hit the bouding sphere
+//returns: true/false
 bool RaySphereIntTest(Ray* ray, BoundingSphere* sphere)
 {
 	D3DXVECTOR3 v = ray->_origin - sphere->_center;
@@ -147,7 +181,7 @@ bool RaySphereIntTest(Ray* ray, BoundingSphere* sphere)
 
 	return false;
 }
-
+// Sets up the bounding spheres for all the objects
 void setupBoundingSphere() {
 	bound1._center = Meshes[0].pos; // plane
 	bound1._radius = 1.25f;
@@ -155,14 +189,19 @@ void setupBoundingSphere() {
 	bound2._center = Meshes[1].pos; // monkey
 	bound2._radius = 1.5f;
 }
-
+// Calculates the distance of the vector to the camera
+//param vec: Vector of the object
+//returns: Float of the distance
 float distFromCamera(D3DXVECTOR3 vec) {
 	float x = vec.x + ray._origin.x;
 	float y = vec.y + ray._origin.y;
 	float z = vec.z + ray._origin.z;
 	return sqrt((x * x) + (y * y) + (z * z));
 }
-
+// Loads a mesh from a file name, into the position in the array of meshstruct's
+//param filename: Filename to read in
+//param pos: Position of the mesh in the structure
+//returns: true/false
 bool LoadMesh(char * filename, int pos) {
 	//temporary meshes
 	ID3DXMesh* Mesh = nullptr;
@@ -271,7 +310,7 @@ bool LoadMesh(char * filename, int pos) {
 	MeshStruct retstruct(Mesh, Mtrls, Textures, { ret[0],ret[1],ret[2] });
 	Meshes.push_back(retstruct);
 }
-
+// Draws the cube to the world initially
 void DrawBoxInit() {
 	Device->CreateVertexBuffer(
 		36 * sizeof(Vertex),
@@ -341,7 +380,8 @@ void DrawBoxInit() {
 
 	VB->Unlock();
 }
-
+// Renders the box to the world
+//returns true/false
 bool RenderBox() {
 	D3DXMATRIX I;
 	D3DXMatrixIdentity(&I);
@@ -361,7 +401,8 @@ bool RenderBox() {
 	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 30, 2);
 	return true;
 }
-
+// Renders the mirror box to the world
+//returns true/false
 bool RenderMirrorBox() {
 	D3DXMATRIX I;
 	D3DXMatrixIdentity(&I);
@@ -387,7 +428,9 @@ bool RenderMirrorBox() {
 	Device->DrawPrimitive(D3DPT_TRIANGLELIST, 30, 2);
 	return true;
 }
-
+// Renders the mesh to the world,
+//param mesh: Mesh to render
+//returns: true/false
 bool RenderMesh(MeshStruct mesh) {
 	D3DXMATRIX world;
 	D3DXMatrixTranslation(&world, mesh.pos.x, mesh.pos.y, mesh.pos.z);
@@ -399,7 +442,10 @@ bool RenderMesh(MeshStruct mesh) {
 	}
 	return true;
 }
-
+// Renders the mesh to the matrix
+//param mesh: Mesh to render
+//param w: matrix to translate the mesh to
+//returns: true/false
 bool RenderMirrorMesh(MeshStruct mesh, D3DXMATRIX W) {
 	Device->SetTransform(D3DTS_WORLD, &W);
 	for (int i = 0; i < mesh.mtrls.size(); i++) {
@@ -409,7 +455,9 @@ bool RenderMirrorMesh(MeshStruct mesh, D3DXMATRIX W) {
 	}
 	return true;
 }
-
+// Renders a mesh with a white material
+//param mesh: Mesh to render
+//returns: true/false
 bool RenderWhiteMesh(MeshStruct mesh) {
 	D3DXMATRIX world;
 	D3DXMatrixTranslation(&world, mesh.pos.x, mesh.pos.y, mesh.pos.z);
@@ -421,7 +469,8 @@ bool RenderWhiteMesh(MeshStruct mesh) {
 	}
 	return true;
 }
-
+// REnders the mirrors and all objects based on the position and the camera view
+//returns: true/false
 bool RenderMirror() {
 	D3DXPLANE planes[6] = {
 		{ 1.0f, 0.0f, 0.0f, 2.5f },
@@ -540,6 +589,7 @@ bool RenderMirror() {
 //
 // Framework functions
 //
+// Setting up the world initially called
 bool Setup()
 {
 	// Load the models
@@ -574,14 +624,14 @@ bool Setup()
 
 	return true;
 }
-
+// Cleaning up the world on destruction/shutdown
 void Cleanup()
 {
 	// pass 0 for the first parameter to instruct cleanup.
 	d3d::Delete<psys::PSystem*>(Sno);
 	d3d::DrawBasicScene(0, 0.0f);
 }
-
+// Displays the updated world, (ie, things that have moved did)
 bool Display(float timeDelta)
 {
 	if (Device)
@@ -734,6 +784,8 @@ bool Display(float timeDelta)
 //
 // WndProc
 //
+// Window proc
+//returns: Result of the windows proc
 LRESULT CALLBACK d3d::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
@@ -754,6 +806,8 @@ LRESULT CALLBACK d3d::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 //
 // WinMain
 //
+// Main windows form
+//returns: true/false
 int WINAPI WinMain(HINSTANCE hinstance,
 	HINSTANCE prevInstance,
 	PSTR cmdLine,

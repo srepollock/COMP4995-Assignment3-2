@@ -5,6 +5,7 @@
 #include "DirectX.h"
 #include "Ray.h"
 
+// Namespace of the functions
 namespace d3d
 {
 	//
@@ -17,6 +18,8 @@ namespace d3d
 		D3DDEVTYPE deviceType,     // [in] HAL or REF
 		IDirect3DDevice9** device);// [out]The created device.
 
+	// Enter the message loop
+	//returns: int
 	int EnterMsgLoop(
 		bool(*ptr_display)(float timeDelta));
 
@@ -37,7 +40,6 @@ namespace d3d
 			t = 0;
 		}
 	}
-
 	template<class T> void Delete(T t)
 	{
 		if (t)
